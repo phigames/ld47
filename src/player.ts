@@ -15,22 +15,22 @@ export default class Player extends Phaser.GameObjects.Container {
         this.reset(shell);
     }
 
-    jumpToShell(shell: ElectronShell) {
+    jumpToShell(newShell: ElectronShell) {
         if (this.disabled) {
             return;
         }
-        let angleOffset = shell.angle - this.shell.angle;
-        this.shell.remove(this);
-        this.shell = shell;
-        this.shell.add(this);
-        this.angle -= angleOffset;
         this.disabled = true;
         this.scene.tweens.add({
             targets: this.sprite,
-            x: this.shell.radius,
+            x: newShell.radius,
             duration: 300,
             ease: 'Quad.easeOut',
             onComplete: () => {
+                let angleOffset = newShell.angle - this.shell.angle;
+                this.shell.remove(this);
+                this.shell = newShell;
+                this.shell.add(this);
+                this.angle -= angleOffset;
                 this.disabled = false;
             },
         });
@@ -57,7 +57,7 @@ export default class Player extends Phaser.GameObjects.Container {
 
     reset(outerShell: ElectronShell) {
         this.sprite.x = outerShell.radius + 200;
-        // this.angle = 90;
+        this.angle = 90;
         if (this.shell != null) {
             this.shell.remove(this);
         }

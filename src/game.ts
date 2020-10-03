@@ -44,7 +44,7 @@ const config = {
     height: C.GAME_HEIGHT,
     scene: Game,
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.FIT,
     }
 };
 
