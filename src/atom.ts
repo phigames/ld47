@@ -1,5 +1,5 @@
 import 'phaser';
-import ElectronShell from './shell';
+import ElectronShell, { DummyShell } from './shell';
 import * as C from './constants';
 import Player from './player';
 
@@ -7,18 +7,22 @@ import Player from './player';
 export class Atom extends Phaser.GameObjects.Container {
 
     shells: ElectronShell[];
+    dummyShell: DummyShell;
     player: Player;
     elementIndex: number;
 
     constructor(scene: Phaser.Scene) {
         super(scene, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
-        this.shells = [new ElectronShell(scene, 100, 0.05, 2)];
+        this.shells = [
+            new ElectronShell(scene, 100, 0.05, 2),
+        ];
+        this.dummyShell = new DummyShell(scene, 200);
         this.elementIndex = 1;
         for (let shell of this.shells) {
             this.add(shell);
         }
 
-        this.player = new Player(scene, this.shells[this.shells.length - 1]);
+        this.player = new Player(scene, this.dummyShell);
         this.add(this.player);
         scene.input.keyboard.on('keydown-DOWN', () => {
             let shellIndex = this.shells.indexOf(this.player.shell);
@@ -36,7 +40,6 @@ export class Atom extends Phaser.GameObjects.Container {
             }
             this.player.jumpToShell(this.shells[shellIndex]);
         });
-        this.nextLevel();
     }
 
     update(time: number, delta: number) {

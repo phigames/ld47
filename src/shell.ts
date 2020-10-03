@@ -35,3 +35,15 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
     }
 
 }
+
+
+export class DummyShell extends ElectronShell {
+
+    constructor(scene: Phaser.Scene, radius: number) {
+        super(scene, radius, 0, 0);
+        this.remove(this.ring, true);
+    }
+
+    update() {}
+
+}
