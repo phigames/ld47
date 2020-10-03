@@ -1,6 +1,7 @@
 import 'phaser';
 import {Atom} from "./atom";
 
+
 export class Game extends Phaser.Scene {
 
     atom: Atom;
