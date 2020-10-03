@@ -1,5 +1,6 @@
 import 'phaser';
 import {Atom} from "./atom";
+import * as C from './constants';
 
 
 export class Game extends Phaser.Scene {
@@ -15,6 +16,7 @@ export class Game extends Phaser.Scene {
 
     create() {
         this.atom = new Atom(this);
+        this.add.existing(this.atom);
     }
 
     update() {
@@ -25,9 +27,9 @@ export class Game extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    backgroundColor: '#125555',
-    width: 800,
-    height: 600,
+    backgroundColor: '#CCCCCC',
+    width: C.GAME_WIDTH,
+    height: C.GAME_HEIGHT,
     scene: Game
 };
 
