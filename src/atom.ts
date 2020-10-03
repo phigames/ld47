@@ -16,7 +16,7 @@ export class Atom extends Phaser.GameObjects.Container {
         this.shells = [
             new ElectronShell(scene, 100, 0.05, 2),
         ];
-        this.dummyShell = new DummyShell(scene, 200);
+        this.dummyShell = new DummyShell(scene, this.shells[this.shells.length - 1].radius + 100);
         this.elementIndex = 1;
         for (let shell of this.shells) {
             this.add(shell);
@@ -25,20 +25,24 @@ export class Atom extends Phaser.GameObjects.Container {
         this.player = new Player(scene, this.dummyShell);
         this.add(this.player);
         scene.input.keyboard.on('keydown-DOWN', () => {
-            let shellIndex = this.shells.indexOf(this.player.shell);
-            shellIndex += 1;
+            let shellIndex = this.shells.indexOf(this.player.shell) + 1;
             if (shellIndex >= this.shells.length) {
                 shellIndex = this.shells.length - 1;
             }
             this.player.jumpToShell(this.shells[shellIndex]);
         });
         scene.input.keyboard.on('keydown-UP', () => {
-            let shellIndex = this.shells.indexOf(this.player.shell);
-            shellIndex -= 1;
-            if (shellIndex < 0) {
-                shellIndex = 0;
+            let shellIndex;
+            if (this.player.shell === this.dummyShell) {
+                shellIndex = this.shells.length - 1;
+            } else {
+                shellIndex = this.shells.indexOf(this.player.shell) - 1;
             }
-            this.player.jumpToShell(this.shells[shellIndex]);
+            if (shellIndex < 0) {
+                this.player.jumpToKernel(this.nextLevel.bind(this));
+            } else {
+                this.player.jumpToShell(this.shells[shellIndex]);
+            }
         });
     }
 
@@ -50,11 +54,16 @@ export class Atom extends Phaser.GameObjects.Container {
 
     nextLevel() {
         this.elementIndex++;
+
         let currentOuterShell = this.shells[this.shells.length - 1];
         let newShell = new ElectronShell(this.scene, currentOuterShell.radius + 100, 0.05, 8);
         this.shells.push(newShell);
         this.add(newShell);
-        this.player.reset(newShell);
+
+        this.remove(this.dummyShell);
+        this.dummyShell = new DummyShell(this.scene, this.shells[this.shells.length - 1].radius + 100);
+        this.add(this.dummyShell);
+        this.player.reset(this.dummyShell);
     }
 
 }

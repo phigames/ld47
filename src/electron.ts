@@ -1,10 +1,15 @@
 import ElectronShell from "./shell";
 
 
-export default abstract class Electron extends Phaser.GameObjects.Sprite {
+export default abstract class Electron extends Phaser.GameObjects.Container {
 
-    calculateDisplayOriginX(distance: number) {
-        return (-distance + this.displayWidth / 2) / this.scaleX;
+    sprite: Phaser.GameObjects.Sprite;
+
+    constructor(scene: Phaser.Scene, distance: number) {
+        super(scene);
+        this.sprite = new Phaser.GameObjects.Sprite(scene, distance, 0, 'electron');
+        this.sprite.displayWidth = this.sprite.displayHeight = 40;
+        this.add(this.sprite);
     }
 
 }
@@ -12,10 +17,9 @@ export default abstract class Electron extends Phaser.GameObjects.Sprite {
 
 export class BasicElectron extends Electron {
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell) {
-        super(scene, 0, 0, 'electron');
-        this.displayWidth = this.displayHeight = 40;
-        this.displayOriginX = this.calculateDisplayOriginX(shell.radius);
+    constructor(scene: Phaser.Scene, shell: ElectronShell, angle: number) {
+        super(scene, shell.radius);
+        this.angle = angle;
     }
 
     update(time: number, delta: number) {

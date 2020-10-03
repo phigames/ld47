@@ -1,19 +1,18 @@
 import ElectronShell from "./shell";
 
-export default class Player extends Phaser.GameObjects.Sprite {
+export default class Player extends Phaser.GameObjects.Container {
 
+    sprite: Phaser.GameObjects.Sprite;
     shell: ElectronShell;
     disabled: boolean;
 
     constructor(scene: Phaser.Scene, shell: ElectronShell) {
-        super(scene, 0, 0, 'proton');
-        this.displayWidth = this.displayHeight = 40;
+        super(scene);
+        this.sprite = new Phaser.GameObjects.Sprite(scene, 0, 0, 'proton');
+        this.sprite.displayWidth = this.sprite.displayHeight = 40;
+        this.add(this.sprite);
         this.depth = 100;
         this.reset(shell);
-    }
-
-    calculateDisplayOriginX(distance: number) {
-        return (-distance + this.displayWidth / 2) / this.scaleX;
     }
 
     jumpToShell(shell: ElectronShell) {
@@ -27,27 +26,47 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.angle -= angleOffset;
         this.disabled = true;
         this.scene.tweens.add({
-            targets: this,
-            displayOriginX: this.calculateDisplayOriginX(this.shell.radius),
+            targets: this.sprite,
+            x: this.shell.radius,
             duration: 300,
             ease: 'Quad.easeOut',
             onComplete: () => {
                 this.disabled = false;
             },
-        })
+        });
+    }
+
+    jumpToKernel(nextLevel: () => void) {
+        if (this.disabled) {
+            return;
+        }
+        this.disabled = true;
+        this.scene.tweens.add({
+            targets: this.sprite,
+            x: 0,
+            duration: 300,
+            ease: 'Quad.easeOut',
+            onComplete: () => {
+                this.shell.remove(this);
+                this.shell = null;
+                this.disabled = false;
+                nextLevel();
+            },
+        });
     }
 
     reset(outerShell: ElectronShell) {
-        this.displayOriginX = this.calculateDisplayOriginX(outerShell.radius + 200);
-        if (this.shell !== undefined) {
+        this.sprite.x = outerShell.radius + 200;
+        // this.angle = 90;
+        if (this.shell != null) {
             this.shell.remove(this);
         }
         this.shell = outerShell;
         this.shell.add(this);
         this.disabled = true;
         this.scene.tweens.add({
-            targets: this,
-            displayOriginX: this.calculateDisplayOriginX(this.shell.radius),
+            targets: this.sprite,
+            x: this.shell.radius,
             duration: 1000,
             ease: 'Quad.easeOut',
             onComplete: () => {
