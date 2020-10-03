@@ -6,22 +6,22 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
     radius: number;
     velocity: number;
     electrons: Electron[];
-    circle: Phaser.GameObjects.Arc;
+    ring: Phaser.GameObjects.Sprite;
 
-    constructor(scene: Phaser.Scene, radius: number, velocity: number) {
+    constructor(scene: Phaser.Scene, radius: number, velocity: number, numElectrons: number) {
         super(scene);
         this.radius = radius;
         this.velocity = velocity;
 
-        this.circle = new Phaser.GameObjects.Arc(scene, 0, 0, this.radius, 0, 360, false, 0x000000, 0);
-        this.circle.strokeColor = 0x000000;
-        this.circle.isStroked = true;
-        this.circle.isFilled = false;
-        this.add(this.circle);
+        this.ring = new Phaser.GameObjects.Sprite(scene, 0, 0, 'ring')
+        this.ring.displayWidth = this.ring.displayHeight = radius * 2;
+        this.add(this.ring);
 
-        this.electrons = [
-            new BasicElectron(scene, this),
-        ];
+        this.electrons = [];
+        for (let i = 0; i < numElectrons; i++) {
+            this.electrons.push(new BasicElectron(scene, this));
+        }
+
         for (let electron of this.electrons) {
             this.add(electron);
         }

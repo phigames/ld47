@@ -15,6 +15,7 @@ export class Game extends Phaser.Scene {
         this.loadImage('background');
         this.loadImage('electron');
         this.loadImage('proton');
+        this.loadImage('ring');
     }
 
     loadImage(name: string) {
@@ -41,7 +42,10 @@ const config = {
     backgroundColor: '#CCCCCC',
     width: C.GAME_WIDTH,
     height: C.GAME_HEIGHT,
-    scene: Game
+    scene: Game,
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+    }
 };
 
 const game = new Phaser.Game(config);
