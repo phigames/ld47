@@ -12,6 +12,17 @@ export class Game extends Phaser.Scene {
     }
 
     preload() {
+        this.loadImage('background');
+        this.loadImage('electron');
+        this.loadImage('proton');
+    }
+
+    loadImage(name: string) {
+        this.load.image(name, `assets/${name}.png`);
+    }
+
+    loadAudio(name: string) {
+        this.load.audio(name, `assets/${name}.ogg`);
     }
 
     create() {
@@ -19,8 +30,8 @@ export class Game extends Phaser.Scene {
         this.add.existing(this.atom);
     }
 
-    update() {
-
+    update(time: number, delta: number) {
+        this.atom.update(time, delta);
     }
 
 }
