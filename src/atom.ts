@@ -4,7 +4,7 @@ import * as C from './constants';
 import Player from './player';
 import Kernel from './kernel';
 import Game from './game';
-import Electron, { BasicElectron, JumpingElectron, DrunkElectron } from './electron';
+import Electron, { BasicElectron, JumpingElectron, FastElectron } from './electron';
 
 
 export class Atom extends Phaser.GameObjects.Container {
@@ -104,7 +104,7 @@ export class Atom extends Phaser.GameObjects.Container {
 
         if (nextElectronPosition >= this.shells.length) {
             let currentOuterShell = this.shells[this.shells.length - 1];
-            let velocity = Math.random() * 0.03 + 0.02;
+            let velocity = Math.random() * 0.02 + 0.02;
             if (this.shells.length % 2 == 1) {
                 velocity = -velocity;
             }
@@ -140,7 +140,7 @@ export class Atom extends Phaser.GameObjects.Container {
                     && Math.random() < C.JUMPING_ELECTRON_PROBABILITY) {
                 electron = new JumpingElectron(this.scene, this.shells[shellIndex], this.shells[shellIndex + 1]);
             } else {
-                electron = new DrunkElectron(this.scene, this.shells[shellIndex]);
+                electron = new FastElectron(this.scene, this.shells[shellIndex]);
             }
             tries++;
         } while (!this.shells[shellIndex].upgradeElectron(electron) && tries < 5);
