@@ -18,6 +18,12 @@ export default abstract class Electron extends Phaser.GameObjects.Container {
             scale: oldScale,
             duration: 200,
         })
+        this.scene.tweens.add({
+            targets: this.sprite,
+            angle: Math.sign(Math.random() - 0.5) * 360,
+            duration: Math.random() * 5000 + 5000,
+            repeat: -1,
+        });
         this.add(this.sprite);
     }
 

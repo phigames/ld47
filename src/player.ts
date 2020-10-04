@@ -1,15 +1,18 @@
 import * as C from './constants';
 import ElectronShell from "./shell";
+import { Atom } from './atom';
 
 export default class Player extends Phaser.GameObjects.Container {
 
+    atom: Atom;
     sprite: Phaser.GameObjects.Sprite;
     shell: ElectronShell;
     disabled: boolean;
     onCollision: () => void;
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell, onCollision: () => void) {
+    constructor(scene: Phaser.Scene, atom: Atom, shell: ElectronShell, onCollision: () => void) {
         super(scene);
+        this.atom = atom;
         this.sprite = new Phaser.GameObjects.Sprite(scene, 0, 0, 'proton');
         this.sprite.displayWidth = this.sprite.displayHeight = C.PLAYER_SIZE;
         this.add(this.sprite);
@@ -20,19 +23,21 @@ export default class Player extends Phaser.GameObjects.Container {
 
     update(time: number, delta: number) {
         if (!this.disabled) {
-            for (let electron of this.shell.electrons) {
-                if (electron.checkCollision(this)) {
-                    this.disabled = true;
-                    this.scene.tweens.add({
-                        targets: this.sprite,
-                        scale: this.sprite.scale * 0.2,
-                        duration: 50,
-                        onComplete: () => {
-                            this.onCollision();
-                        },
-                    })
-                    this.scene.sound.play('zapp');
-                };
+            for (let shell of this.atom.shells) {
+                for (let electron of shell.electrons) {
+                    if (electron.checkCollision(this)) {
+                        this.disabled = true;
+                        this.scene.tweens.add({
+                            targets: this.sprite,
+                            scale: this.sprite.scale * 0.2,
+                            duration: 50,
+                            onComplete: () => {
+                                this.onCollision();
+                            },
+                        });
+                        this.scene.sound.play('zapp');
+                    }
+                }
             }
         }
     }

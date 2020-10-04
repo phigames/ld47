@@ -29,7 +29,7 @@ export class Atom extends Phaser.GameObjects.Container {
         this.add(this.dummyShell);
         this.elementNumber = 1;
 
-        this.player = new Player(game, this.dummyShell, this.onCollision.bind(this));
+        this.player = new Player(game, this, this.dummyShell, this.onCollision.bind(this));
         this.add(this.player);
         game.input.keyboard.on('keydown-DOWN', this.onDownPressed.bind(this));
         game.input.keyboard.on('keydown-UP', this.onUpPressed.bind(this));

@@ -8,7 +8,7 @@ export default class Game extends Phaser.Scene {
     atom: Atom;
     lives: number;
     lifeDisplay: Phaser.GameObjects.Container;
-    elementDisplay: Phaser.GameObjects.Image;
+    elementDisplay: Phaser.GameObjects.Container;
 
     constructor() {
         super('game');
@@ -23,9 +23,7 @@ export default class Game extends Phaser.Scene {
         this.loadImage('proton');
         this.loadImage('ring');
         this.loadImage('life');
-        for (let i = 1; i <= 6; i++) {
-            this.loadImage('element' + i.toString());
-        }
+        this.loadImage('element_frame');
 
         this.loadAudio('click');
         this.loadAudio('ding');
@@ -76,7 +74,7 @@ export default class Game extends Phaser.Scene {
         this.lives = C.INITIAL_LIVES + 1;
         this.removeLife();
 
-        this.elementDisplay = new Phaser.GameObjects.Image(this, C.GAME_WIDTH - 70, 70, null);
+        this.elementDisplay = new Phaser.GameObjects.Container(this, C.GAME_WIDTH - 70, 70);
         this.elementDisplay.scale = C.GUI_SCALE;
 
         this.atom = new Atom(this);
@@ -99,7 +97,21 @@ export default class Game extends Phaser.Scene {
     }
 
     updateElementDisplay(elementNumber:  number) {
-        this.elementDisplay.setTexture('element' + elementNumber.toString());
+        this.elementDisplay.removeAll();
+        this.elementDisplay.add(new Phaser.GameObjects.Image(this, 0, 0, 'element_frame'))
+        this.elementDisplay.add(new Phaser.GameObjects.Text(this, -140, -150, C.ELEMENT_NAMES[elementNumber], {
+            fontFamily: 'sans-serif',
+            fontSize: '180px',
+            color: '#000000',
+        }));
+        this.elementDisplay.add(new Phaser.GameObjects.Text(this, 0, 40, elementNumber.toString(), {
+            fontFamily: 'sans-serif',
+            fontSize: '70px',
+            color: '#000000',
+            fontStyle: 'bold',
+            fixedWidth: 130,
+            align: 'right',
+        }));
     }
 
 }
@@ -119,6 +131,24 @@ class GameOverScreen extends Phaser.Scene {
         let gameOver = this.add.image(C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2, 'gameover');
         gameOver.displayWidth = C.GAME_WIDTH;
         gameOver.displayHeight = C.GAME_HEIGHT;
+
+        let elementDisplay = new Phaser.GameObjects.Container(this, C.GAME_WIDTH - 70, 70);
+        elementDisplay.scale = C.GUI_SCALE;
+        elementDisplay.add(new Phaser.GameObjects.Image(this, 0, 0, 'element_frame'))
+        elementDisplay.add(new Phaser.GameObjects.Text(this, -140, -150, C.ELEMENT_NAMES[data.elementNumber], {
+            fontFamily: 'sans-serif',
+            fontSize: '180px',
+            color: '#000000',
+        }));
+        elementDisplay.add(new Phaser.GameObjects.Text(this, 0, 40, data.elementNumber.toString(), {
+            fontFamily: 'sans-serif',
+            fontSize: '70px',
+            color: '#000000',
+            fontStyle: 'bold',
+            fixedWidth: 130,
+            align: 'right',
+        }));
+        this.add.existing(elementDisplay);
     }
 
 }
@@ -134,4 +164,6 @@ const config = {
     },
 };
 
-const game = new Phaser.Game(config);
+window.onload = () => {
+    const game = new Phaser.Game(config);
+}
