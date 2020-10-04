@@ -70,7 +70,8 @@ export class FastElectron extends Electron {
     constructor(scene: Phaser.Scene, shell: ElectronShell) {
         super(scene, shell.radius, 'electron_orange');
         this.shell = shell;
-        this.velocity = 0.02 * Math.sign(this.shell.velocity);
+        let bandumVelocitas = (Math.random() * 2 - 1) * 0.005;
+        this.velocity = (0.02 + bandumVelocitas) * Math.sign(this.shell.velocity);
     }
 
     update(time: number, delta: number) {

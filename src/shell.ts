@@ -1,4 +1,4 @@
-import Electron, { BasicElectron, FastElectron } from "./electron";
+import Electron, { BasicElectron, FastElectron, JumpingElectron } from "./electron";
 
 
 export default class ElectronShell extends Phaser.GameObjects.Container {
@@ -23,8 +23,16 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
     addElectron(electron: Electron) {
         this.electrons.push(electron);
         this.add(electron)
+
+        let basicElectrons = [];
         for (let i = 0; i < this.electrons.length; i++) {
-            this.electrons[i].angle = 360 / this.electrons.length * (i + 1);
+            if (this.electrons[i] instanceof BasicElectron) {
+                basicElectrons.push(i);
+            }
+        }
+        console.log(basicElectrons);
+        for (let i = 0; i < basicElectrons.length; i++) {
+            this.electrons[basicElectrons[i]].angle = 360 / basicElectrons.length * (i + 1);
         }
     }
 
