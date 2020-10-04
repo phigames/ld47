@@ -3,9 +3,10 @@ import {Atom} from "./atom";
 import * as C from './constants';
 
 
-export class Game extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
 
     atom: Atom;
+    elementDisplay: Phaser.GameObjects.Image;
 
     constructor() {
         super('game');
@@ -16,6 +17,9 @@ export class Game extends Phaser.Scene {
         this.loadImage('electron');
         this.loadImage('proton');
         this.loadImage('ring');
+        for (let i = 1; i <= 6; i++) {
+            this.loadImage('element' + i.toString());
+        }
     }
 
     loadImage(name: string) {
@@ -29,10 +33,19 @@ export class Game extends Phaser.Scene {
     create() {
         this.atom = new Atom(this);
         this.add.existing(this.atom);
+
+        this.elementDisplay = new Phaser.GameObjects.Image(this, C.GAME_WIDTH - 70, 70, null);
+        this.elementDisplay.scale = 0.3;
+        this.add.existing(this.elementDisplay);
+        this.updateElementDisplay(1);
     }
 
     update(time: number, delta: number) {
         this.atom.update(time, delta);
+    }
+
+    updateElementDisplay(elementIndex:  number) {
+        this.elementDisplay.setTexture('element' + elementIndex.toString());
     }
 
 }

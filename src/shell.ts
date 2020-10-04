@@ -21,9 +21,7 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
         for (let i = 0; i < numElectrons; i++) {
             this.electrons.push(new BasicElectron(scene, this, i * 360 / numElectrons));
         }
-        for (let electron of this.electrons) {
-            this.add(electron);
-        }
+        this.add(this.electrons);
     }
 
     update(time: number, delta: number) {
@@ -43,6 +41,6 @@ export class DummyShell extends ElectronShell {
         this.remove(this.ring, true);
     }
 
-    update() {}
+    update() { }
 
 }

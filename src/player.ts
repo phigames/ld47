@@ -1,3 +1,4 @@
+import * as C from './constants';
 import ElectronShell from "./shell";
 
 export default class Player extends Phaser.GameObjects.Container {
@@ -9,7 +10,7 @@ export default class Player extends Phaser.GameObjects.Container {
     constructor(scene: Phaser.Scene, shell: ElectronShell) {
         super(scene);
         this.sprite = new Phaser.GameObjects.Sprite(scene, 0, 0, 'proton');
-        this.sprite.displayWidth = this.sprite.displayHeight = 40;
+        this.sprite.displayWidth = this.sprite.displayHeight = C.PLAYER_SIZE;
         this.add(this.sprite);
         this.depth = 100;
         this.reset(shell);
@@ -17,13 +18,13 @@ export default class Player extends Phaser.GameObjects.Container {
 
     jumpToShell(newShell: ElectronShell) {
         if (this.disabled) {
-            return;
+            return false;
         }
         this.disabled = true;
         this.scene.tweens.add({
             targets: this.sprite,
             x: newShell.radius,
-            duration: 300,
+            duration: C.PLAYER_JUMP_DURATION,
             ease: 'Quad.easeOut',
             onComplete: () => {
                 let angleOffset = newShell.angle - this.shell.angle;
@@ -34,6 +35,7 @@ export default class Player extends Phaser.GameObjects.Container {
                 this.disabled = false;
             },
         });
+        return true;
     }
 
     jumpToKernel(nextLevel: () => void) {
@@ -45,7 +47,7 @@ export default class Player extends Phaser.GameObjects.Container {
             targets: this.sprite,
             x: 0,
             duration: 300,
-            ease: 'Quad.easeOut',
+            ease: 'Linear',
             onComplete: () => {
                 this.shell.remove(this);
                 this.shell = null;
