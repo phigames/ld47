@@ -8,7 +8,7 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
     electrons: Electron[];
     ring: Phaser.GameObjects.Sprite;
 
-    constructor(scene: Phaser.Scene, radius: number, velocity: number, numElectrons: number) {
+    constructor(scene: Phaser.Scene, radius: number, velocity: number) {
         super(scene);
         this.radius = radius;
         this.velocity = velocity;
@@ -28,6 +28,24 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
         }
     }
 
+    upgradeElectron(newElectron: Electron): boolean {
+        let indices = [];
+        for (let i = 0; i < this.electrons.length; i++) {
+            indices.push(i);
+        }
+        indices = Phaser.Math.RND.shuffle(indices);
+        for (let i of indices) {
+            if (this.electrons[i] instanceof BasicElectron) {
+                newElectron.angle = this.electrons[i].angle;
+                this.electrons[i].destroy();
+                this.electrons[i] = newElectron;
+                this.add(newElectron);
+                return true;
+            }
+        }
+        return false;
+    }
+
     update(time: number, delta: number) {
         this.angle += delta * this.velocity;
         for (let electron of this.electrons) {
@@ -45,7 +63,7 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
 export class DummyShell extends ElectronShell {
 
     constructor(scene: Phaser.Scene, radius: number) {
-        super(scene, radius, 0, 0);
+        super(scene, radius, 0);
         this.remove(this.ring, true);
     }
 

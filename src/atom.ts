@@ -4,7 +4,7 @@ import * as C from './constants';
 import Player from './player';
 import Kernel from './kernel';
 import Game from './game';
-import Electron, { BasicElectron } from './electron';
+import Electron, { BasicElectron, JumpingElectron, DrunkElectron } from './electron';
 
 
 export class Atom extends Phaser.GameObjects.Container {
@@ -20,7 +20,7 @@ export class Atom extends Phaser.GameObjects.Container {
     constructor(game: Game) {
         super(game, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
         this.shells = [
-            new ElectronShell(game, 100, 0.05, 2),
+            new ElectronShell(game, 100, 0.05),
         ];
         let firstElectron = new BasicElectron(this.scene, this.shells[0])
         this.shells[0].addElectron(firstElectron)
@@ -42,6 +42,10 @@ export class Atom extends Phaser.GameObjects.Container {
         this.removeLife = game.removeLife.bind(game);
 
         this.updateZoom(this.shells.length);
+
+        // for (let i = 0; i < 20; i++) {
+        //     this.nextLevel();
+        // }
     }
 
     update(time: number, delta: number) {
@@ -70,12 +74,10 @@ export class Atom extends Phaser.GameObjects.Container {
 
     onDownPressed() {
         let shellIndex = this.shells.indexOf(this.player.shell) + 1;
-        if (shellIndex >= this.shells.length) {
-            shellIndex = this.shells.length - 1;
-        }
-
-        if (this.player.jumpToShell(this.shells[shellIndex])) {
-            this.updateZoom(shellIndex);
+        if (shellIndex < this.shells.length && this.player.shell !== this.dummyShell) {
+            if (this.player.jumpToShell(this.shells[shellIndex])) {
+                this.updateZoom(shellIndex);
+            }
         }
     }
 
@@ -106,7 +108,7 @@ export class Atom extends Phaser.GameObjects.Container {
             if (this.shells.length % 2 == 1) {
                 velocity = -velocity;
             }
-            let newShell = new ElectronShell(this.scene, currentOuterShell.radius + C.SHELL_DISTANCE, velocity, 8);
+            let newShell = new ElectronShell(this.scene, currentOuterShell.radius + C.SHELL_DISTANCE, velocity);
             this.shells.push(newShell);
             this.add(newShell);
 
@@ -115,10 +117,33 @@ export class Atom extends Phaser.GameObjects.Container {
             this.add(this.dummyShell);
         }
 
-        let electron = new BasicElectron(this.scene, this.shells[nextElectronPosition])
+        let electron = new BasicElectron(this.scene, this.shells[nextElectronPosition]);
         this.shells[nextElectronPosition].addElectron(electron)
+
+        if (this.shells.length >= C.MIN_SHELLS_FOR_ELECTRON_UPGRADES
+                && Math.random() < C.ELECTRON_UPGRADE_PROBABILITY) {
+            this.upgradeRandomElectron();
+        }
+
         this.player.reset(this.dummyShell);
         this.updateZoom(this.shells.length);
+    }
+
+    upgradeRandomElectron() {
+        let shellIndex: number;
+        let electron: Electron;
+        let tries = 0;
+        do {
+            shellIndex = Math.floor(Math.random() * this.shells.length);
+            if (shellIndex < this.shells.length - 1
+                    && this.shells.length >= C.MIN_SHELLS_FOR_JUMPING_ELECTRONS
+                    && Math.random() < C.JUMPING_ELECTRON_PROBABILITY) {
+                electron = new JumpingElectron(this.scene, this.shells[shellIndex], this.shells[shellIndex + 1]);
+            } else {
+                electron = new DrunkElectron(this.scene, this.shells[shellIndex]);
+            }
+            tries++;
+        } while (!this.shells[shellIndex].upgradeElectron(electron) && tries < 5);
     }
 
 }

@@ -31,13 +31,14 @@ export default class Player extends Phaser.GameObjects.Container {
                             this.onCollision();
                         },
                     })
+                    this.scene.sound.play('zapp');
                 };
             }
         }
     }
 
     jumpToShell(newShell: ElectronShell): boolean {
-        if (this.disabled) {
+        if (this.disabled || newShell === this.shell) {
             return false;
         }
         this.disabled = true;
@@ -53,6 +54,7 @@ export default class Player extends Phaser.GameObjects.Container {
                 this.shell.add(this);
                 this.angle -= angleOffset;
                 this.disabled = false;
+                this.scene.sound.play('click');
             },
         });
         return true;
@@ -72,6 +74,7 @@ export default class Player extends Phaser.GameObjects.Container {
                 this.shell.remove(this);
                 this.shell = null;
                 this.disabled = false;
+                this.scene.sound.play('ding');
                 nextLevel();
             },
         });

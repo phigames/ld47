@@ -18,12 +18,18 @@ export default class Game extends Phaser.Scene {
         this.loadImage('titlescreen');
         this.loadImage('background');
         this.loadImage('electron');
+        this.loadImage('electron_orange');
+        this.loadImage('electron_purple');
         this.loadImage('proton');
         this.loadImage('ring');
         this.loadImage('life');
         for (let i = 1; i <= 6; i++) {
             this.loadImage('element' + i.toString());
         }
+
+        this.loadAudio('click');
+        this.loadAudio('ding');
+        this.loadAudio('zapp');
     }
 
     loadImage(name: string) {
@@ -69,21 +75,22 @@ export default class Game extends Phaser.Scene {
         this.lifeDisplay.scale = C.GUI_SCALE;
         this.lives = C.INITIAL_LIVES + 1;
         this.removeLife();
-        this.add.existing(this.lifeDisplay);
 
         this.elementDisplay = new Phaser.GameObjects.Image(this, C.GAME_WIDTH - 70, 70, null);
         this.elementDisplay.scale = C.GUI_SCALE;
-        this.add.existing(this.elementDisplay);
 
         this.atom = new Atom(this);
+
         this.add.existing(this.atom);
+        this.add.existing(this.lifeDisplay);
+        this.add.existing(this.elementDisplay);
     }
 
     removeLife() {
         this.lives--;
         this.lifeDisplay.removeAll();
         for (let i = 0; i < this.lives; i++) {
-            let life = new Phaser.GameObjects.Image(this, i * 300, 0, 'life');
+            let life = new Phaser.GameObjects.Image(this, i * 350, 0, 'life');
             this.lifeDisplay.add(life);
         }
         if (this.lives <= 0) {
@@ -93,22 +100,6 @@ export default class Game extends Phaser.Scene {
 
     updateElementDisplay(elementNumber:  number) {
         this.elementDisplay.setTexture('element' + elementNumber.toString());
-    }
-
-}
-
-
-class TitleScreen extends Phaser.Scene {
-
-    constructor() {
-        super('title');
-    }
-
-    preload() {
-        this.load.image('titlescreen', 'assets/titlescreen.png');
-    }
-
-    create() {
     }
 
 }
@@ -125,7 +116,9 @@ class GameOverScreen extends Phaser.Scene {
     }
 
     create(data: {elementNumber: number}) {
-        console.log(data.elementNumber);
+        let gameOver = this.add.image(C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2, 'gameover');
+        gameOver.displayWidth = C.GAME_WIDTH;
+        gameOver.displayHeight = C.GAME_HEIGHT;
     }
 
 }

@@ -7,10 +7,17 @@ export default abstract class Electron extends Phaser.GameObjects.Container {
 
     sprite: Phaser.GameObjects.Sprite;
 
-    constructor(scene: Phaser.Scene, distance: number) {
+    constructor(scene: Phaser.Scene, distance: number, texture: string) {
         super(scene);
-        this.sprite = new Phaser.GameObjects.Sprite(scene, distance, 0, 'electron');
+        this.sprite = new Phaser.GameObjects.Sprite(scene, distance, 0, texture);
         this.sprite.displayWidth = this.sprite.displayHeight = C.ELECTRON_SIZE;
+        let oldScale = this.sprite.scale;
+        this.sprite.scale = oldScale * 1.5;
+        this.scene.tweens.add({
+            targets: this.sprite,
+            scale: oldScale,
+            duration: 200,
+        })
         this.add(this.sprite);
     }
 
@@ -24,7 +31,7 @@ export class BasicElectron extends Electron {
     shell: ElectronShell;
 
     constructor(scene: Phaser.Scene, shell: ElectronShell) {
-        super(scene, shell.radius);
+        super(scene, shell.radius, 'electron');
         this.shell = shell;
     }
 
@@ -54,17 +61,14 @@ export class DrunkElectron extends Electron {
     initialAngle: number;
     velocity: number;
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell, angle: number) {
-        super(scene, shell.radius);
+    constructor(scene: Phaser.Scene, shell: ElectronShell) {
+        super(scene, shell.radius, 'electron_orange');
         this.shell = shell;
-        this.angle = this.initialAngle = angle;
         this.velocity = 0.02;
     }
 
     update(time: number, delta: number) {
-        if (this.velocity > 0 && this.angle - this.initialAngle > 20) {
-            this.velocity = -this.velocity;
-        } else if (this.velocity < 0 && this.angle - this.initialAngle < -20) {
+        if (Math.random() < 0.05) {
             this.velocity = -this.velocity;
         }
         this.angle += this.velocity * delta;
@@ -89,22 +93,34 @@ export class DrunkElectron extends Electron {
 export class JumpingElectron extends Electron {
 
     shell: ElectronShell;
+    mainShell: ElectronShell;
     alternateShell: ElectronShell;
+    jumpTime: number;
     disabled: boolean;
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell, alternateShell: ElectronShell, angle: number) {
-        super(scene, shell.radius);
-        this.shell = shell;
+    constructor(scene: Phaser.Scene, mainShell: ElectronShell, alternateShell: ElectronShell) {
+        super(scene, mainShell.radius, 'electron_purple');
+        this.mainShell = this.shell = mainShell;
         this.alternateShell = alternateShell;
-        this.angle = angle;
+        this.jumpTime = 2000;
+        this.disabled = false;
     }
 
     update(time: number, delta: number) {
-
+        this.jumpTime -= delta;
+        if (this.jumpTime < 0) {
+            if (this.shell === this.mainShell) {
+                this.jumpToShell(this.alternateShell);
+                this.jumpTime += 1000;
+            } else {
+                this.jumpToShell(this.mainShell);
+                this.jumpTime += 2000;
+            }
+        }
     }
 
     checkCollision(player: Player): boolean {
-        if (player.shell !== this.shell) {
+        if (this.disabled || player.shell !== this.shell) {
             return false;
         }
         let angularWidth = C.ELECTRON_SIZE / this.shell.getCircumference() * 360;
@@ -124,7 +140,7 @@ export class JumpingElectron extends Electron {
         this.scene.tweens.add({
             targets: this.sprite,
             x: newShell.radius,
-            duration: C.PLAYER_JUMP_DURATION,
+            duration: C.ELECTRON_JUMP_DURATION,
             ease: 'Quad.easeOut',
             onComplete: () => {
                 let angleOffset = newShell.angle - this.shell.angle;
