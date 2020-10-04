@@ -22,7 +22,14 @@ export default class Player extends Phaser.GameObjects.Container {
         if (!this.disabled) {
             for (let electron of this.shell.electrons) {
                 if (electron.checkCollision(this)) {
-                    this.onCollision();
+                    this.scene.tweens.add({
+                        targets: this.sprite,
+                        scale: this.sprite.scale * 0.2,
+                        duration: 50,
+                        onComplete: ()=>{
+                            this.onCollision();
+                        },
+                    })
                 };
             }
         }
@@ -70,6 +77,9 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     reset(outerShell: ElectronShell) {
+        //Niclas Wilderness
+        this.sprite.displayWidth = this.sprite.displayHeight = C.PLAYER_SIZE;
+        //End of Niclas Wilderness
         this.sprite.x = outerShell.radius + 200;
         this.angle = 90;
         if (this.shell != null) {
