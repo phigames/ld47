@@ -4,6 +4,7 @@ import * as C from './constants';
 import Player from './player';
 import Kernel from './kernel';
 import Game from './game';
+import Electron, { BasicElectron } from './electron';
 
 
 export class Atom extends Phaser.GameObjects.Container {
@@ -18,8 +19,10 @@ export class Atom extends Phaser.GameObjects.Container {
     constructor(scene: Game) {
         super(scene, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
         this.shells = [
-            new ElectronShell(scene, 100, 0.05, 2),
+            new ElectronShell(scene, 100, 0.05, 2)
         ];
+        let firstElectron = new BasicElectron(this.scene, this.shells[0])
+        this.shells[0].addElectron(firstElectron)
         this.add(this.shells);
         this.dummyShell = new DummyShell(scene, this.shells[this.shells.length - 1].radius + 100);
         this.add(this.dummyShell);
@@ -90,19 +93,25 @@ export class Atom extends Phaser.GameObjects.Container {
         this.elementIndex++;
         this.kernel.addProton();
         this.updateElementDisplay(this.elementIndex);
+        let nextElectronPosition = C.NEW_ELECTRON_SHELL[this.elementIndex] - 1
 
-        let currentOuterShell = this.shells[this.shells.length - 1];
-        let velocity = Math.random() * 0.03 + 0.02;
-        if (Math.random() < 0.5) {
-            velocity = -velocity;
+        if (nextElectronPosition >= this.shells.length) {
+            let currentOuterShell = this.shells[this.shells.length - 1];
+            let velocity = Math.random() * 0.03 + 0.02;
+            if (Math.random() < 0.5) {
+                velocity = -velocity;
+            }
+            let newShell = new ElectronShell(this.scene, currentOuterShell.radius + C.SHELL_DISTANCE, velocity, 8);
+            this.shells.push(newShell);
+            this.add(newShell);
+
+            this.remove(this.dummyShell);
+            this.dummyShell = new DummyShell(this.scene, this.shells[this.shells.length - 1].radius + 100);
+            this.add(this.dummyShell);
         }
-        let newShell = new ElectronShell(this.scene, currentOuterShell.radius + C.SHELL_DISTANCE, velocity, 8);
-        this.shells.push(newShell);
-        this.add(newShell);
 
-        this.remove(this.dummyShell);
-        this.dummyShell = new DummyShell(this.scene, this.shells[this.shells.length - 1].radius + 100);
-        this.add(this.dummyShell);
+        let electron = new BasicElectron(this.scene, this.shells[nextElectronPosition])
+        this.shells[nextElectronPosition].addElectron(electron)
         this.player.reset(this.dummyShell);
         this.updateZoom(this.shells.length);
     }

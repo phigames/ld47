@@ -9,3 +9,5 @@ export const PROTON_SIZE = 50;
 export const PLAYER_JUMP_DURATION = 300;
 
 export const ELEMENT_DISPLAY_SCALE = 0.3;
+
+export const NEW_ELECTRON_SHELL = [0,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,5,5,4,4,4,4,4,4,4,4,4,4]

@@ -23,10 +23,9 @@ export class BasicElectron extends Electron {
 
     shell: ElectronShell;
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell, angle: number) {
+    constructor(scene: Phaser.Scene, shell: ElectronShell) {
         super(scene, shell.radius);
         this.shell = shell;
-        this.angle = angle;
     }
 
     update(time: number, delta: number) {

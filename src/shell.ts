@@ -18,10 +18,14 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
         this.add(this.ring);
 
         this.electrons = [];
-        for (let i = 0; i < numElectrons; i++) {
-            this.electrons.push(new BasicElectron(scene, this, i * 360 / numElectrons));
+    }
+
+    addElectron(electron: Electron) {
+        this.electrons.push(electron);
+        this.add(electron)
+        for (let i = 0; i < this.electrons.length; i++) {
+            this.electrons[i].angle = 360 / this.electrons.length * (i + 1);
         }
-        this.add(this.electrons);
     }
 
     update(time: number, delta: number) {
