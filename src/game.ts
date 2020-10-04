@@ -25,6 +25,7 @@ export default class Game extends Phaser.Scene {
         this.loadImage('life');
         this.loadImage('element_frame');
 
+        this.loadAudio('brumm');
         this.loadAudio('click');
         this.loadAudio('ding');
         this.loadAudio('zapp');
@@ -82,6 +83,8 @@ export default class Game extends Phaser.Scene {
         this.add.existing(this.atom);
         this.add.existing(this.lifeDisplay);
         this.add.existing(this.elementDisplay);
+
+        this.sound.play('brumm', {loop: true});
     }
 
     removeLife() {

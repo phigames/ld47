@@ -61,7 +61,7 @@ export class BasicElectron extends Electron {
 }
 
 
-export class DrunkElectron extends Electron {
+export class FastElectron extends Electron {
 
     shell: ElectronShell;
     initialAngle: number;
@@ -70,13 +70,10 @@ export class DrunkElectron extends Electron {
     constructor(scene: Phaser.Scene, shell: ElectronShell) {
         super(scene, shell.radius, 'electron_orange');
         this.shell = shell;
-        this.velocity = 0.02;
+        this.velocity = 0.02 * Math.sign(this.shell.velocity);
     }
 
     update(time: number, delta: number) {
-        if (Math.random() < 0.05) {
-            this.velocity = -this.velocity;
-        }
         this.angle += this.velocity * delta;
     }
 
@@ -117,7 +114,7 @@ export class JumpingElectron extends Electron {
         if (this.jumpTime < 0) {
             if (this.shell === this.mainShell) {
                 this.jumpToShell(this.alternateShell);
-                this.jumpTime += 1000;
+                this.jumpTime += 500;
             } else {
                 this.jumpToShell(this.mainShell);
                 this.jumpTime += 2000;
