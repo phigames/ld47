@@ -98,7 +98,7 @@ export class Atom extends Phaser.GameObjects.Container {
         if (nextElectronPosition >= this.shells.length) {
             let currentOuterShell = this.shells[this.shells.length - 1];
             let velocity = Math.random() * 0.03 + 0.02;
-            if (Math.random() < 0.5) {
+            if (this.shells.length % 2 == 1) {
                 velocity = -velocity;
             }
             let newShell = new ElectronShell(this.scene, currentOuterShell.radius + C.SHELL_DISTANCE, velocity, 8);
