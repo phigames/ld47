@@ -17,7 +17,7 @@ export default class Kernel extends Phaser.GameObjects.Container {
         }
         this.scene.tweens.add({
             targets: this,
-            angle: 360,
+            angle: -360,
             duration: 5000,
             repeat: -1,
         });
