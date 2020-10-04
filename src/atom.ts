@@ -12,28 +12,32 @@ export class Atom extends Phaser.GameObjects.Container {
     dummyShell: DummyShell;
     player: Player;
     kernel: Kernel;
-    elementIndex: number;
-    updateElementDisplay: (elementIndex: number) => void;
+    elementNumber: number;
+    updateElementDisplay: (elementNumber: number) => void;
+    removeLife: () => void;
 
-    constructor(scene: Game) {
-        super(scene, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
+    constructor(game: Game) {
+        super(game, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
         this.shells = [
-            new ElectronShell(scene, 100, 0.05, 2),
+            new ElectronShell(game, 100, 0.05, 2),
         ];
         this.add(this.shells);
-        this.dummyShell = new DummyShell(scene, this.shells[this.shells.length - 1].radius + 100);
+        this.dummyShell = new DummyShell(game, this.shells[this.shells.length - 1].radius + 100);
         this.add(this.dummyShell);
-        this.elementIndex = 1;
+        this.elementNumber = 1;
 
-        this.player = new Player(scene, this.dummyShell, this.onCollision.bind(this));
+        this.player = new Player(game, this.dummyShell, this.onCollision.bind(this));
         this.add(this.player);
-        scene.input.keyboard.on('keydown-DOWN', this.onDownPressed.bind(this));
-        scene.input.keyboard.on('keydown-UP', this.onUpPressed.bind(this));
+        game.input.keyboard.on('keydown-DOWN', this.onDownPressed.bind(this));
+        game.input.keyboard.on('keydown-UP', this.onUpPressed.bind(this));
 
-        this.kernel = new Kernel(scene, 5);
+        this.kernel = new Kernel(game, 5);
         this.add(this.kernel);
 
-        this.updateElementDisplay = scene.updateElementDisplay.bind(scene);
+        this.updateElementDisplay = game.updateElementDisplay.bind(game);
+        this.updateElementDisplay(this.elementNumber);
+        this.removeLife = game.removeLife.bind(game);
+
         this.updateZoom(this.shells.length);
     }
 
@@ -74,6 +78,7 @@ export class Atom extends Phaser.GameObjects.Container {
 
     onCollision() {
         this.player.reset(this.dummyShell);
+        this.removeLife();
         this.updateZoom(this.shells.length);
     }
 
@@ -87,9 +92,9 @@ export class Atom extends Phaser.GameObjects.Container {
     }
 
     nextLevel() {
-        this.elementIndex++;
+        this.elementNumber++;
         this.kernel.addProton();
-        this.updateElementDisplay(this.elementIndex);
+        this.updateElementDisplay(this.elementNumber);
 
         let currentOuterShell = this.shells[this.shells.length - 1];
         let velocity = Math.random() * 0.03 + 0.02;

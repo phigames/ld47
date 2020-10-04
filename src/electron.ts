@@ -39,7 +39,11 @@ export class BasicElectron extends Electron {
         }
         let angularWidth = C.ELECTRON_SIZE / this.shell.getCircumference() * 360;
         let playerAngularWidth = C.PLAYER_SIZE / this.shell.getCircumference() * 360
-        return Math.abs(this.angle - player.angle) < angularWidth / 2 + playerAngularWidth / 2 - 1;
+        let angularDistance = Math.abs(this.angle - player.angle);
+        while (angularDistance > 180) {
+            angularDistance = Math.abs(angularDistance - 360);
+        }
+        return angularDistance < angularWidth / 2 + playerAngularWidth / 2;
     }
 
 }
