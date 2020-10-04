@@ -16,4 +16,5 @@ export const MIN_SHELLS_FOR_JUMPING_ELECTRONS = 3;
 export const JUMPING_ELECTRON_PROBABILITY = 0.5;
 
 export const NEW_ELECTRON_SHELL = [0,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,5,5,4,4,4,4,4,4,4,4,4,4]
+export const ELEMENT_NAMES = ["Nu","H","He","Li","Be","B","C","N","O","F","Ne"]
 export const GUI_SCALE = 0.3;
