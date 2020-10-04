@@ -5,13 +5,13 @@ export default class Kernel extends Phaser.GameObjects.Container {
 
     nextAngle: number;
     nextDistance: number;
-    numProtons: number;
+    totalProtons: number;
 
     constructor(scene: Phaser.Scene, numProtons: number) {
         super(scene);
         this.nextAngle = 0;
         this.nextDistance = 0;
-        this.numProtons = 0;
+        this.totalProtons = 0;
         for (let i = 0; i < numProtons; i++) {
             this.addProton(false);
         }
@@ -29,9 +29,9 @@ export default class Kernel extends Phaser.GameObjects.Container {
         proton.displayWidth = proton.displayHeight = C.PROTON_SIZE;
         proton.angle = Math.random() * 360;
         this.addAt(proton, 0);
-        this.numProtons++;
+        this.totalProtons++;
         this.nextAngle += 222.5;
-        this.nextDistance += 20 / this.numProtons ** 2;
+        this.nextDistance += 20 / this.totalProtons ** 2;
 
         if (animate) {
             this.scene.tweens.add({
