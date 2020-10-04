@@ -89,7 +89,7 @@ export class Atom extends Phaser.GameObjects.Container {
         this.scene.tweens.add({
             targets: this,
             scale: 1 / (Math.sqrt(shellIndex + 1)) + 0.3,
-            duration: C.PLAYER_JUMP_DURATION,
+            duration: 300,
             ease: 'Quad.easeOut',
         });
     }

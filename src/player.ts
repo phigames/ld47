@@ -22,11 +22,12 @@ export default class Player extends Phaser.GameObjects.Container {
         if (!this.disabled) {
             for (let electron of this.shell.electrons) {
                 if (electron.checkCollision(this)) {
+                    this.disabled = true;
                     this.scene.tweens.add({
                         targets: this.sprite,
                         scale: this.sprite.scale * 0.2,
                         duration: 50,
-                        onComplete: ()=>{
+                        onComplete: () => {
                             this.onCollision();
                         },
                     })
@@ -65,7 +66,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.tweens.add({
             targets: this.sprite,
             x: 0,
-            duration: 300,
+            duration: C.PLAYER_JUMP_DURATION,
             ease: 'Linear',
             onComplete: () => {
                 this.shell.remove(this);
@@ -89,7 +90,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.tweens.add({
             targets: this.sprite,
             x: this.shell.radius,
-            duration: 1000,
+            duration: 700,
             ease: 'Quad.easeOut',
             onComplete: () => {
                 this.disabled = false;
