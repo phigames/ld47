@@ -35,7 +35,7 @@ export default class Player extends Phaser.GameObjects.Container {
         }
     }
 
-    jumpToShell(newShell: ElectronShell) {
+    jumpToShell(newShell: ElectronShell): boolean {
         if (this.disabled) {
             return false;
         }
@@ -77,9 +77,7 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     reset(outerShell: ElectronShell) {
-        //Niclas Wilderness
         this.sprite.displayWidth = this.sprite.displayHeight = C.PLAYER_SIZE;
-        //End of Niclas Wilderness
         this.sprite.x = outerShell.radius + 200;
         this.angle = 90;
         if (this.shell != null) {

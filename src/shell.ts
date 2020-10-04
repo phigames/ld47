@@ -1,4 +1,4 @@
-import Electron, { BasicElectron } from "./electron";
+import Electron, { BasicElectron, DrunkElectron } from "./electron";
 
 
 export default class ElectronShell extends Phaser.GameObjects.Container {
@@ -19,7 +19,7 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
 
         this.electrons = [];
         for (let i = 0; i < numElectrons; i++) {
-            this.electrons.push(new BasicElectron(scene, this, i * 360 / numElectrons));
+            this.electrons.push(new DrunkElectron(scene, this, i * 360 / numElectrons));
         }
         this.add(this.electrons);
     }
