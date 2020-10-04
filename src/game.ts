@@ -149,8 +149,22 @@ class GameOverScreen extends Phaser.Scene {
             align: 'right',
         }));
         this.add.existing(elementDisplay);
-    }
 
+        gameOver.setInteractive();
+
+        this.input.keyboard.on('keydown', () => {
+            this.input.keyboard.off('keydown');
+            gameOver.off('pointerdown');
+            gameOver.destroy();
+            this.scene.start('game');
+        });
+        gameOver.on('pointerdown', () => {
+            this.input.keyboard.off('keydown');
+            gameOver.off('pointerdown');
+            gameOver.destroy();
+            this.scene.start('game');
+        });
+    }
 }
 
 
