@@ -13,18 +13,19 @@ export class Atom extends Phaser.GameObjects.Container {
     player: Player;
     kernel: Kernel;
     elementIndex: number;
-    updateElementDisplay: (number) => void;
+    updateElementDisplay: (elementIndex: number) => void;
 
     constructor(scene: Game) {
         super(scene, C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2);
         this.shells = [
             new ElectronShell(scene, 100, 0.05, 2),
         ];
-        this.dummyShell = new DummyShell(scene, this.shells[this.shells.length - 1].radius + 100);
         this.add(this.shells);
+        this.dummyShell = new DummyShell(scene, this.shells[this.shells.length - 1].radius + 100);
+        this.add(this.dummyShell);
         this.elementIndex = 1;
 
-        this.player = new Player(scene, this.dummyShell);
+        this.player = new Player(scene, this.dummyShell, this.onCollision.bind(this));
         this.add(this.player);
         scene.input.keyboard.on('keydown-DOWN', this.onDownPressed.bind(this));
         scene.input.keyboard.on('keydown-UP', this.onUpPressed.bind(this));
@@ -33,12 +34,14 @@ export class Atom extends Phaser.GameObjects.Container {
         this.add(this.kernel);
 
         this.updateElementDisplay = scene.updateElementDisplay.bind(scene);
+        this.updateZoom(this.shells.length);
     }
 
     update(time: number, delta: number) {
         for (let shell of this.shells) {
             shell.update(time, delta);
         }
+        this.player.update(time, delta);
     }
 
     onUpPressed() {
@@ -69,10 +72,15 @@ export class Atom extends Phaser.GameObjects.Container {
         }
     }
 
+    onCollision() {
+        this.player.reset(this.dummyShell);
+        this.updateZoom(this.shells.length);
+    }
+
     updateZoom(shellIndex: number) {
         this.scene.tweens.add({
             targets: this,
-            scale: Math.min(2 / (Math.sqrt(shellIndex) + 1), 1),
+            scale: 1 / (Math.sqrt(shellIndex + 1)) + 0.3,
             duration: C.PLAYER_JUMP_DURATION,
             ease: 'Quad.easeOut',
         });

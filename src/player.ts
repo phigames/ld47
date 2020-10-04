@@ -6,14 +6,26 @@ export default class Player extends Phaser.GameObjects.Container {
     sprite: Phaser.GameObjects.Sprite;
     shell: ElectronShell;
     disabled: boolean;
+    onCollision: () => void;
 
-    constructor(scene: Phaser.Scene, shell: ElectronShell) {
+    constructor(scene: Phaser.Scene, shell: ElectronShell, onCollision: () => void) {
         super(scene);
         this.sprite = new Phaser.GameObjects.Sprite(scene, 0, 0, 'proton');
         this.sprite.displayWidth = this.sprite.displayHeight = C.PLAYER_SIZE;
         this.add(this.sprite);
         this.depth = 100;
         this.reset(shell);
+        this.onCollision = onCollision;
+    }
+
+    update(time: number, delta: number) {
+        if (!this.disabled) {
+            for (let electron of this.shell.electrons) {
+                if (electron.checkCollision(this)) {
+                    this.onCollision();
+                };
+            }
+        }
     }
 
     jumpToShell(newShell: ElectronShell) {

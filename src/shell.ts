@@ -31,6 +31,10 @@ export default class ElectronShell extends Phaser.GameObjects.Container {
         }
     }
 
+    getCircumference() {
+        return this.radius * 2 * Math.PI;
+    }
+
 }
 
 

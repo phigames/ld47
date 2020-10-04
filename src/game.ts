@@ -31,6 +31,10 @@ export default class Game extends Phaser.Scene {
     }
 
     create() {
+        let background = this.add.image(C.GAME_WIDTH / 2, C.GAME_HEIGHT / 2, 'background');
+        background.displayWidth = C.GAME_WIDTH;
+        background.displayHeight = C.GAME_HEIGHT;
+
         this.atom = new Atom(this);
         this.add.existing(this.atom);
 
@@ -52,13 +56,12 @@ export default class Game extends Phaser.Scene {
 
 const config = {
     type: Phaser.AUTO,
-    backgroundColor: '#CCCCCC',
     width: C.GAME_WIDTH,
     height: C.GAME_HEIGHT,
     scene: Game,
     scale: {
         mode: Phaser.Scale.FIT,
-    }
+    },
 };
 
 const game = new Phaser.Game(config);
