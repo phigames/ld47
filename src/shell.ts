@@ -1,4 +1,4 @@
-import Electron, { BasicElectron } from "./electron";
+import Electron, { BasicElectron, DrunkElectron } from "./electron";
 
 
 export default class ElectronShell extends Phaser.GameObjects.Container {
