@@ -12,4 +12,5 @@ export const PLAYER_JUMP_DURATION = 200;
 export const ELEMENT_DISPLAY_SCALE = 0.3;
 
 export const NEW_ELECTRON_SHELL = [0,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,4,4,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,5,5,4,4,4,4,4,4,4,4,4,4]
+export const ELEMENT_NAMES = ["Nu","H","He","Li","Be","B","C","N","O","F","Ne"]
 export const GUI_SCALE = 0.3;
