@@ -35,7 +35,13 @@ export default class Game extends Phaser.Scene {
     }
 
     loadAudio(name: string) {
-        this.load.audio(name, `assets/${name}.ogg`);
+        if (this.game.device.audio.ogg) {
+            console.log(`loading ogg`);
+            this.load.audio(name, `assets/${name}.ogg`);
+        } else {
+            console.log(`loading mp3`);
+            this.load.audio(name, `assets/${name}.mp3`);
+        }
     }
 
     create() {
